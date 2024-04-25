@@ -10,8 +10,7 @@ public class Logger
 
     public void Log(string message)
     {
-        if (string.IsNullOrWhiteSpace(message))
-            throw new ArgumentNullException();
+        ArgumentException.ThrowIfNullOrWhiteSpace(message);
 
         LastMessage = message;
 
