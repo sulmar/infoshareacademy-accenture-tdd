@@ -21,6 +21,7 @@
     public class User
     {
         public bool IsAdmin { get; set; }
+        public string Name { get; set; }
     }
 
 }
