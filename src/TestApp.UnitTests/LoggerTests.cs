@@ -10,24 +10,29 @@ namespace TestApp.UnitTests;
 
 public class LoggerTests
 {
+    Logger sut;
+
+    public LoggerTests()
+    {
+        sut = new Logger();
+    }
+
     [Fact]
-    public void Log_MessageIsEmpty_ShouldThrowsArgumentNullException()
+    public void Log_MessageIsEmpty_ShouldThrowsArgumentException()
     {
         // Arrange
-        Logger sut = new Logger();
 
         // Act
         var act = () => sut.Log(string.Empty);
 
         // Assert
-        Assert.Throws<ArgumentNullException>(act);
+        Assert.Throws<ArgumentException>(act);
     }
 
     [Fact]
     public void Log_MessageIsNotEmpty_ShouldSetLastMessage()
     {
         // Arrange
-        Logger sut = new Logger();
 
         // Act
         sut.Log("a");
