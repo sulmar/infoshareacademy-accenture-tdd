@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestApp.Fundamentals;
+﻿using TestApp.Fundamentals;
 using Xunit;
 using Assert = Xunit.Assert;
 
@@ -12,15 +6,23 @@ namespace TestApp.UnitTests;
 
 public class ProductsControllerTests
 {
+    ProductsController sut;
+
+    const int ExistingProductId = 1;
+    const int NotExistingProductId = 999;
+
+    public ProductsControllerTests()
+    {
+        sut = new ProductsController(new CacheProductRepository(new DbProductRepository()));
+    }
+
     [Fact]
     public void Get_FirstCall_ShouldSetCacheHitEqualZero()
     {
         // Arrange
-        var productId = 1;
-        var sut = new ProductsController(new CacheProductRepository(new DbProductRepository()));
 
         // Act
-        var response = sut.Get(productId);
+        var response = sut.Get(ExistingProductId);
 
         // Assert
         Assert.Equal(0,  response.CacheHit);
@@ -30,12 +32,10 @@ public class ProductsControllerTests
     public void Get_SecondCall_ShouldSetCacheHitEqualOne() 
     {
         // Arrange
-        var productId = 1;
-        var sut = new ProductsController(new CacheProductRepository(new DbProductRepository()));
-        sut.Get(productId);
+        sut.Get(ExistingProductId);
 
         // Act
-        var response = sut.Get(productId);
+        var response = sut.Get(ExistingProductId);
 
         // Assert
         Assert.Equal(1, response.CacheHit);
@@ -46,15 +46,26 @@ public class ProductsControllerTests
     public void Get_ExistingProductId_ShouldReturnProduct()
     {
         // Arrange
-        var productId = 1;
-        var sut = new ProductsController(new DbProductRepository());
 
         // Act
-        var result = sut.Get(productId);
+        var result = sut.Get(ExistingProductId);
 
         // Assert
         Assert.NotNull(result);
         Assert.Equal(1, result.Id);
+
+    }
+
+    [Fact]
+    public void Get_NotExistingProductId_ShouldReturnProduct()
+    {
+        // Arrange
+
+        // Act
+        var result = sut.Get(NotExistingProductId);
+
+        // Assert
+        Assert.Null(result);       
 
     }
 }
