@@ -1,6 +1,7 @@
 ﻿using TestApp.Fundamentals;
 using Xunit;
 using Assert = Xunit.Assert;
+using FluentAssertions;
 
 namespace TestApp.UnitTests;
 
@@ -22,7 +23,11 @@ public class CustomersControllerTests
         var result = sut.GetCustomer(0);
 
         // Assert
-        Assert.IsType<NotFound>(result);        
+        Assert.IsType<NotFound>(result);
+
+        // FluentAssertions
+        result.Should().BeOfType<NotFound>();    
+
     }
 
     [Fact]
@@ -35,5 +40,8 @@ public class CustomersControllerTests
 
         // Assert
         Assert.IsType<Ok>(result);
+
+        // FluentAssertions
+        result.Should().BeOfType<Ok>();
     }
 }
