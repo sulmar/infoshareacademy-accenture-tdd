@@ -5,17 +5,22 @@ namespace TestApp.Fundamentals;
 // Testing Events
 public class TemperatureSensor
 {
-    private const float HighTemperatureThreshold = 30.0f;
+    private float highTemperatureThreshold;
 
     public event EventHandler<TemperatureEventArgs> OnHighTemperatureAlert;
     private float _temperature;
+
+    public TemperatureSensor(float highTemperatureThreshold = 30.0f)
+    {
+        this.highTemperatureThreshold = highTemperatureThreshold;
+    }
 
     public void SetTemperature(float temperature)
     {
         _temperature = temperature;
         Console.WriteLine($"Current Temperature: {_temperature}°C");
 
-        if (_temperature > HighTemperatureThreshold)
+        if (_temperature > highTemperatureThreshold)
         {
             OnHighTemperatureAlert?.Invoke(this, new TemperatureEventArgs(_temperature));
         }
