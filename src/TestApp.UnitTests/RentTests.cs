@@ -3,14 +3,23 @@ namespace TestApp.UnitTests
     [TestClass]
     public class RentTests
     {
+        private User rentee;
+        private Rent rent;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            // Arrange          
+            rentee = new User();
+            rent = new Rent { Rentee = rentee };
+        }
+
         // Method_Scenario_ExpectedBehavior
 
         [TestMethod]
         public void CanReturn_UserIsRentee_ReturnsTrue()
         {
             // Arrange           
-            User rentee = new User();
-            Rent rent = new Rent { Rentee = rentee };
 
             // Act
             var result = rent.CanReturn(rentee);
@@ -23,8 +32,6 @@ namespace TestApp.UnitTests
         public void CanReturn_UserIsNotRentee_ReturnsFalse()
         {
             // Arrange
-            User rentee = new User();
-            Rent rent = new Rent { Rentee = rentee };
 
             // Act
             var result = rent.CanReturn(new User());
@@ -38,8 +45,6 @@ namespace TestApp.UnitTests
         public void CanReturn_UserIsAdmin_ReturnsTrue()
         {
             // Arrange
-            User rentee = new User();
-            Rent rent = new Rent {  Rentee = rentee };
 
             // Act
             var result = rent.CanReturn(new User { IsAdmin = true });
@@ -53,7 +58,6 @@ namespace TestApp.UnitTests
         public void CanReturn_UserIsEmpty_ShouldThrowArgumentNullException()
         {
             // Arrange
-            Rent rent = new Rent();
 
             // Act
             rent.CanReturn(null);
