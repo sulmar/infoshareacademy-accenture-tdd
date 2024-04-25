@@ -4,14 +4,14 @@ namespace TestApp.UnitTests
     public class RentTests
     {
         private User rentee;
-        private Rent rent;
+        private Rent sut;   // SUT = System Under Test
 
         [TestInitialize]
         public void Setup()
         {
             // Arrange          
             rentee = new User();
-            rent = new Rent { Rentee = rentee };
+            sut = new Rent { Rentee = rentee };
         }
 
         // Method_Scenario_ExpectedBehavior
@@ -22,7 +22,7 @@ namespace TestApp.UnitTests
             // Arrange           
 
             // Act
-            var result = rent.CanReturn(rentee);
+            var result = sut.CanReturn(rentee);
 
             // Assert            
             Assert.IsTrue(result);
@@ -34,7 +34,7 @@ namespace TestApp.UnitTests
             // Arrange
 
             // Act
-            var result = rent.CanReturn(new User());
+            var result = sut.CanReturn(new User());
 
             // Assert
             Assert.IsFalse(result);
@@ -47,7 +47,7 @@ namespace TestApp.UnitTests
             // Arrange
 
             // Act
-            var result = rent.CanReturn(new User { IsAdmin = true });
+            var result = sut.CanReturn(new User { IsAdmin = true });
 
             // Assert
             Assert.IsTrue(result);
@@ -60,7 +60,7 @@ namespace TestApp.UnitTests
             // Arrange
 
             // Act
-            rent.CanReturn(null);
+            sut.CanReturn(null);
 
             // Assert
         }
