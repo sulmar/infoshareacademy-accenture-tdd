@@ -1,38 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TestApp.Mocking;
 
 namespace TestApp.Fundamentals;
 
 public class ProductsController
 {
-    private readonly DbProductRepository productRepository;
-    private readonly CacheProductRepository cacheProductRepository;
+    private readonly IProductRepository productRepository;
 
-    public ProductsController(DbProductRepository productRepository, CacheProductRepository cacheProductRepository)
+    public ProductsController(IProductRepository productRepository)
     {
         this.productRepository = productRepository;
-        this.cacheProductRepository = cacheProductRepository;
     }
 
     public Product Get(int id)
     {
-        Product product = cacheProductRepository.Get(id);
-
-        if (product == null)
-        {
-            product = productRepository.Get(id);
-
-            if (product != null)
-            {
-                cacheProductRepository.Add(product);
-            }
-        }
+        Product product = productRepository.Get(id);
 
         return product;
     }
 }
 
-public class DbProductRepository
+
+public interface IEntityRepository<T>
+{
+    T Get(int id);
+    void Add(T item);
+}
+
+public interface IProductRepository : IEntityRepository<Product>
+{
+}
+
+public class DbProductRepository : IProductRepository
 {
     private readonly IDictionary<int, Product> products;
 
@@ -48,6 +48,11 @@ public class DbProductRepository
         products = _products.ToDictionary(p => p.Id);
     }
 
+    public void Add(Product product)
+    {
+        products.Add(product.Id, product);
+    }
+
     public Product Get(int id)
     {
         if (products.TryGetValue(id, out Product product))
@@ -59,13 +64,16 @@ public class DbProductRepository
     }
 }
 
-public class CacheProductRepository
+// Proxy Design Pattern
+public class CacheProductRepository : IProductRepository
 {
     private readonly IDictionary<int, Product> products;
+    private readonly IProductRepository productRepository;
 
-    public CacheProductRepository()
+    public CacheProductRepository(IProductRepository productRepository)
     {
         products = new Dictionary<int, Product>();
+        this.productRepository = productRepository;
     }
 
     public void Add(Product product)
@@ -82,7 +90,17 @@ public class CacheProductRepository
             return product;
         }
         else
-            return null;
+        {
+            // Real Subject
+            product = productRepository.Get(id);
+
+            if (product != null)
+            {
+                Add(product);
+            }
+
+            return product;
+        }
     }
 
 }
