@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace TestApp.Fundamentals;
 
@@ -37,12 +38,14 @@ public class DbProductRepository
 
     public DbProductRepository()
     {
-        products = new Dictionary<int, Product>
-        {
-            [1] = new Product(1, "Product 1", 10),
-            [2] = new Product(2, "Product 2", 20),
-            [3] = new Product(3, "Product 3", 30)
-        };
+        List<Product> _products =
+        [
+            new Product(1, "Product 1", 10),
+            new Product(2, "Product 2", 20),
+            new Product(3, "Product 3", 30)
+        ];
+
+        products = _products.ToDictionary(p => p.Id);
     }
 
     public Product Get(int id)

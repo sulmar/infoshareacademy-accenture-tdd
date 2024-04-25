@@ -40,4 +40,21 @@ public class ProductsControllerTests
         // Assert
         Assert.Equal(1, response.CacheHit);
     }
+
+
+    [Fact]
+    public void Get_ExistingProductId_ShouldReturnProduct()
+    {
+        // Arrange
+        var productId = 1;
+        var sut = new ProductsController(new DbProductRepository(), new CacheProductRepository());
+
+        // Act
+        var result = sut.Get(productId);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(1, result.Id);
+
+    }
 }
