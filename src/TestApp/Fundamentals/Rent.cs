@@ -1,4 +1,6 @@
-﻿namespace TestApp
+﻿using System;
+
+namespace TestApp
 {
     public class Rent
     {
@@ -6,6 +8,9 @@
 
         public bool CanReturn(User user)
         {
+            if (user == null)
+                throw new ArgumentNullException();
+
             if (user.IsAdmin)
                 return true;
 
@@ -22,6 +27,8 @@
     {
         public bool IsAdmin { get; set; }
         public string Name { get; set; }
+
+
     }
 
 }
