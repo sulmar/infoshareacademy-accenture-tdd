@@ -25,7 +25,10 @@ public class ShoppingCart
 
     public bool RemoveItem(CartItem item)
     {
-        return items.Remove(item);
+        if (item == null)
+            throw new ArgumentNullException();
+
+        return items.Remove(item);        
     }
 
     public IEnumerable<CartItem> GetItems(bool orderByAscending = true)
