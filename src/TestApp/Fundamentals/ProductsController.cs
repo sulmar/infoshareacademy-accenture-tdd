@@ -37,7 +37,7 @@ public class DbProductRepository
 
     public DbProductRepository()
     {
-        var products = new Dictionary<int, Product>
+        products = new Dictionary<int, Product>
         {
             [1] = new Product(1, "Product 1", 10),
             [2] = new Product(2, "Product 2", 20),
