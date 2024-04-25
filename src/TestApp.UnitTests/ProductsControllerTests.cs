@@ -17,7 +17,7 @@ public class ProductsControllerTests
     {
         // Arrange
         var productId = 1;
-        var sut = new ProductsController(new DbProductRepository(), new CacheProductRepository());
+        var sut = new ProductsController(new CacheProductRepository(new DbProductRepository()));
 
         // Act
         var response = sut.Get(productId);
@@ -31,7 +31,7 @@ public class ProductsControllerTests
     {
         // Arrange
         var productId = 1;
-        var sut = new ProductsController(new DbProductRepository(), new CacheProductRepository());
+        var sut = new ProductsController(new CacheProductRepository(new DbProductRepository()));
         sut.Get(productId);
 
         // Act
@@ -47,7 +47,7 @@ public class ProductsControllerTests
     {
         // Arrange
         var productId = 1;
-        var sut = new ProductsController(new DbProductRepository(), new CacheProductRepository());
+        var sut = new ProductsController(new DbProductRepository());
 
         // Act
         var result = sut.Get(productId);
