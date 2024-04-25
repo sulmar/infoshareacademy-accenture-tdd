@@ -1,4 +1,5 @@
 ﻿using TestApp.Fundamentals;
+using FluentAssertions;
 
 namespace TestApp.UnitTests;
 
@@ -8,25 +9,25 @@ public class TemperatureSensorTests
     const float HighTemperatureThreshold = 30.0f;
 
     TemperatureSensor sut;
-    bool isTriggered = false;
 
     [TestInitialize]
     public void Setup()
     {
         sut = new TemperatureSensor(HighTemperatureThreshold);
-        sut.OnHighTemperatureAlert += (sender, args) => { isTriggered = true; };
     }
 
     [TestMethod]
     public void SetTemperature_AboveHighTemperatureThreshold_ShouldRiseOnHighTemperatureAlert()
     {
-        // Arrange
+        // Arrange        
+        var monitor = sut.Monitor();
 
         // Act
         sut.SetTemperature(HighTemperatureThreshold + 0.01f);
 
         // Assert
-        Assert.IsTrue(isTriggered);
+        monitor.Should().Raise(nameof(TemperatureSensor.OnHighTemperatureAlert))
+            .WithSender(sut);        
         
     }
 
@@ -34,12 +35,13 @@ public class TemperatureSensorTests
     public void SetTemperature_BelowHighTemperatureThreshold_ShouldNotRiseOnHighTemperatureAlert()
     {
         // Arrange
+        var monitor = sut.Monitor();
 
         // Act
         sut.SetTemperature(HighTemperatureThreshold);
 
         // Assert
-        Assert.IsFalse(isTriggered);
+        monitor.Should().NotRaise(nameof(TemperatureSensor.OnHighTemperatureAlert));
 
     }
 
