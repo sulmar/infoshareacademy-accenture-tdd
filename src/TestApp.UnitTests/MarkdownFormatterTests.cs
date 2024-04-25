@@ -8,6 +8,15 @@ namespace TestApp.UnitTests
 
     public class MarkdownFormatterTests
     {
+        const string DoubleAsterix = "**";
+
+        MarkdownFormatter formatter;
+
+        public MarkdownFormatterTests()
+        {
+            formatter = new MarkdownFormatter();
+        }
+
         // Method_Scenario_ExpectedBehavior
 
         [Theory]
@@ -17,7 +26,6 @@ namespace TestApp.UnitTests
         public void FormatAsBold_NotEmptyContent_ReturnsContentEncloseDoubleAsterix(string content)
         {
             // Arrange
-            MarkdownFormatter formatter = new MarkdownFormatter();
 
             // Act
             var result = formatter.FormatAsBold(content);
@@ -28,9 +36,9 @@ namespace TestApp.UnitTests
             // Assert.Equal(expected, result); 
 
             // Wariant 2: Test ogólny
-            Assert.StartsWith("**", result);
+            Assert.StartsWith(DoubleAsterix, result);
             Assert.Contains(content, result);
-            Assert.EndsWith("**", result);
+            Assert.EndsWith(DoubleAsterix, result);
         }
 
 
@@ -38,7 +46,6 @@ namespace TestApp.UnitTests
         public void FormatAsBold_EmptyContent_ShouldThrowArgumentNullException()
         {
             // Arrange
-            MarkdownFormatter formatter = new MarkdownFormatter();
 
             // Act
             var act = () => formatter.FormatAsBold(null);
