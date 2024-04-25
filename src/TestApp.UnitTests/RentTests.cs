@@ -54,15 +54,15 @@ namespace TestApp.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]   // Assert
         public void CanReturn_UserIsEmpty_ShouldThrowArgumentNullException()
         {
             // Arrange
 
             // Act
-            sut.CanReturn(null);
+            Action act = () => sut.CanReturn(null);
 
             // Assert
+            Assert.ThrowsException<ArgumentNullException>(act);
         }
     }
 }
