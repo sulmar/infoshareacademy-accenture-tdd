@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TestApp.Fundamentals;
 
-public class ZplPrinter
+// Wzorzec Budowniczy (Builder)
+public class ZplCommandBuilder
 {
     private readonly StringBuilder commandBuilder = new StringBuilder();
 
@@ -31,14 +31,48 @@ public class ZplPrinter
         commandBuilder.Append($"^FO{x},{y}");
     }
 
-    public string Output
+    public string Create()
     {
-        get
-        {
-            commandBuilder.Append("^XZ");
+        commandBuilder.Append("^XZ");
 
-            return commandBuilder.ToString();
-        }
+        return commandBuilder.ToString();
+
+    }
+}
+
+public interface IZplPrinter
+{
+    void Print(string content);
+}
+
+public class FakeZplPrinter : IZplPrinter
+{
+    public void Print(string content)
+    {
+        Console.WriteLine(content);
+    }
+}
+
+public class TcpZplPrinter : IZplPrinter
+{
+    public void Print(string content)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class LaberyZplPrinter : IZplPrinter
+{
+    public void Print(string content)
+    {
+        TcpClient tcpClient = new TcpClient();
+      //  tcpClient.Connect(ipAdress, port);
+
+        var stream = new StreamWriter(tcpClient.GetStream());
+        stream.Write(content);
+        stream.Flush();
+        stream.Close();
+        tcpClient.Close();
     }
 
 

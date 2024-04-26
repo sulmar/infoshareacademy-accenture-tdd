@@ -10,17 +10,16 @@ using FluentAssertions;
 
 namespace TestApp.UnitTests;
 
-public class ZplPrinterTests
+public class ZplCommandBuilderTests
 {
-
     [Fact]
     public void CreateLabel_ValidSize_ShouldCreateLabel()
     {
-        var sut = new ZplPrinter();
+        var sut = new ZplCommandBuilder();
 
         sut.CreateLabel(20, 10);
 
-        sut.Output.Should()
+        sut.Create().Should()
          .StartWith("^XA")
          .And.EndWith("^XZ");
     }
@@ -28,12 +27,12 @@ public class ZplPrinterTests
     [Fact]
     public void SetText_NotEmptyText_ShouldReturnCommandText()
     {
-        var sut = new ZplPrinter();
+        var sut = new ZplCommandBuilder();
         sut.CreateLabel(20, 10);
 
         sut.SetText("Hello World");
 
-        sut.Output.Should()
+        sut.Create().Should()
             .StartWith("^XA")
             .And.Contain("^FDHello World^FS")
             .And.EndWith("^XZ");
@@ -43,7 +42,7 @@ public class ZplPrinterTests
     [Fact]
     public void SetText_EmptyText_ShouldThrowsArgumentNullException()
     {
-        var sut = new ZplPrinter();
+        var sut = new ZplCommandBuilder();
 
         Action act = () => sut.SetText(string.Empty);
 
@@ -53,12 +52,12 @@ public class ZplPrinterTests
     [Fact]
     public void SetPosition_ValidPosition_ShouldReturnCommandText()
     {
-        var sut = new ZplPrinter();
+        var sut = new ZplCommandBuilder();
         sut.CreateLabel(20, 10);
 
         sut.SetPosition(1, 2);
 
-        sut.Output.Should()
+        sut.Create().Should()
             .StartWith("^XA")
             .And.Contain("^FO1,2")
             .And.EndWith("^XZ");
