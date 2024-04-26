@@ -21,7 +21,7 @@ public class FakeInvalidFileService : IFileService
     public string ReadAllText(string path) => "a";
 }
 
-public class TrackingServiceTests
+public class TrackingServiceFakeTests
 {
     [Fact]
     public void Get_ValidJson_ShouldReturnsLocation()
