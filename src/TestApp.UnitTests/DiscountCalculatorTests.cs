@@ -17,7 +17,7 @@ public class DiscountCalculatorTests
     public void CalculateDiscount_EmptyDiscountCode_ShouldReturnsOriginalPrice()
     {
         // Arrange
-        var sut = new DiscountCalculator();
+        var sut = new DiscountCalculator(new DiscountFactory());
 
         // Act
         var result = sut.CalculateDiscount(1, string.Empty);
@@ -30,7 +30,7 @@ public class DiscountCalculatorTests
     public void CalculateDiscount_DiscountCodeSAVE10NOW_ShouldReturns10PercentageDiscount()
     {
         // Arrange
-        var sut = new DiscountCalculator();
+        var sut = new DiscountCalculator(new DiscountFactory());
 
         // Act
         var result = sut.CalculateDiscount(100, "SAVE10NOW");
@@ -43,7 +43,7 @@ public class DiscountCalculatorTests
     public void CalculateDiscount_DiscountCodeDISCOUNT20OFF_ShouldReturns20PercentageDiscount()
     {
         // Arrange
-        var sut = new DiscountCalculator();
+        var sut = new DiscountCalculator(new DiscountFactory());
 
         // Act
         var result = sut.CalculateDiscount(100, "DISCOUNT20OFF");
@@ -56,7 +56,7 @@ public class DiscountCalculatorTests
     public void CalculateDiscount_PriceIsNegative_ShouldThrowsArgumentException()
     {
         // Arrange
-        var sut = new DiscountCalculator();
+        var sut = new DiscountCalculator(new DiscountFactory());
 
         // Act
         Action act = () => sut.CalculateDiscount(-1, string.Empty);
@@ -71,7 +71,7 @@ public class DiscountCalculatorTests
     public void CalculateDiscount_InvalidDiscountCode_ShouldThrowsArgumentException()
     {
         // Arrange
-        var sut = new DiscountCalculator();
+        var sut = new DiscountCalculator(new DiscountFactory());
 
         // Act
         Action act = () => sut.CalculateDiscount(1, "a");
@@ -85,8 +85,11 @@ public class DiscountCalculatorTests
     public void CalculateDiscount_FirstSingleUseDiscountCode_ShouldReturns50PercentageDiscount()
     {
         // Arrange
-        var sut = new DiscountCalculator();
-        sut.AddDiscountCodeToPool("a");
+        var factory = new DiscountFactory();
+        factory.AddDiscountCodeToPool("a");
+
+        var sut = new DiscountCalculator(factory);
+        
 
         // Act
         var result = sut.CalculateDiscount(100, "a");
@@ -99,8 +102,10 @@ public class DiscountCalculatorTests
     public void CalculateDiscount_SecondSingleUseDiscountCode_ShouldThrowsArgumentException()
     {
         // Arrange
-        var sut = new DiscountCalculator();
-        sut.AddDiscountCodeToPool("a");
+        var factory = new DiscountFactory();
+        factory.AddDiscountCodeToPool("a");
+        var sut = new DiscountCalculator(factory);
+        
         sut.CalculateDiscount(100, "a");
 
         // Act
@@ -110,44 +115,5 @@ public class DiscountCalculatorTests
         var exception = Assert.Throws<ArgumentException>(act);
         Assert.Equal("Invalid discount code", exception.Message);
     }
-
-    [Fact]
-    public void AddDiscountCodeToPool_NotEmptyDiscountCode_DiscountCodePoolHasDiscountCode()
-    {
-        // Arrange
-        var sut = new DiscountCalculator();
-
-        // Act
-        sut.AddDiscountCodeToPool("a");
-
-        // Assert
-        Assert.Collection(sut.DiscountCodePool, item => item.Contains("a"));
-    }
-
-    [Fact]
-    public void AddDiscountCodeToPool_TwiceTheSameDiscountCode_ShouldThrowsInvalidOperationException()
-    {
-        // Arrange
-        var sut = new DiscountCalculator();
-        sut.AddDiscountCodeToPool("a");
-
-        // Act
-        Action act = () => sut.AddDiscountCodeToPool("a");
-
-        // Assert
-        Assert.Throws<InvalidOperationException>(act);
-    }
-
-    [Fact]
-    public void AddDiscountCodeToPool_EmptyDiscountCode_ShouldThrowsArgumentException()
-    {
-        // Arrange
-        var sut = new DiscountCalculator();
-
-        // Act
-        Action act = () => sut.AddDiscountCodeToPool(string.Empty);
-
-        // Assert
-        Assert.Throws<ArgumentException>(act);
-    }
+   
 }
