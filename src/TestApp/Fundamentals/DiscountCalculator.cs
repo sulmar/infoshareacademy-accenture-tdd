@@ -8,9 +8,9 @@ namespace TestApp.Fundamentals;
 
 public class DiscountCalculator
 {
-    private readonly DiscountFactory factory;
+    private readonly IDiscountFactory factory;
 
-    public DiscountCalculator(DiscountFactory factory)
+    public DiscountCalculator(IDiscountFactory factory)
     {
         this.factory = factory;
     }

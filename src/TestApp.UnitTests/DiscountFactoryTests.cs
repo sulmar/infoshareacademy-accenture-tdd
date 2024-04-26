@@ -4,13 +4,13 @@ using Assert = Xunit.Assert;
 
 namespace TestApp.UnitTests;
 
-public class DiscountFactoryTests
+public class DiscountFactoryProxyTests
 {
     [Fact]
     public void AddDiscountCodeToPool_EmptyDiscountCode_ShouldThrowsArgumentException()
     {
         // Arrange
-        var sut = new DiscountFactory();
+        var sut = new DiscountFactoryProxy(new PernamentDiscountFactory());
 
         // Act
         Action act = () => sut.AddDiscountCodeToPool(string.Empty);
@@ -23,7 +23,7 @@ public class DiscountFactoryTests
     public void AddDiscountCodeToPool_TwiceTheSameDiscountCode_ShouldThrowsInvalidOperationException()
     {
         // Arrange
-        var sut = new DiscountFactory();
+        var sut = new DiscountFactoryProxy(new PernamentDiscountFactory());
         sut.AddDiscountCodeToPool("a");
 
         // Act
@@ -37,7 +37,7 @@ public class DiscountFactoryTests
     public void AddDiscountCodeToPool_NotEmptyDiscountCode_DiscountCodePoolHasDiscountCode()
     {
         // Arrange
-        var sut = new DiscountFactory();
+        var sut = new DiscountFactoryProxy(new PernamentDiscountFactory());
 
         // Act
         sut.AddDiscountCodeToPool("a");
