@@ -4,10 +4,10 @@ namespace TestApp.Mocking;
 
 public class ProductsController
 {
-    private readonly DbProductRepository productRepository;
+    private readonly IProductRepository productRepository;
     private readonly CacheProductRepository cacheProductRepository;
 
-    public ProductsController(DbProductRepository productRepository, CacheProductRepository cacheProductRepository)
+    public ProductsController(IProductRepository productRepository, CacheProductRepository cacheProductRepository)
     {
         this.productRepository = productRepository;
         this.cacheProductRepository = cacheProductRepository;
@@ -31,7 +31,12 @@ public class ProductsController
     }
 }
 
-public class DbProductRepository
+public interface IProductRepository
+{
+    Product Get(int id);
+}
+
+public class DbProductRepository : IProductRepository
 {
     private readonly IDictionary<int, Product> products;
 
@@ -56,7 +61,7 @@ public class DbProductRepository
     }
 }
 
-public class CacheProductRepository
+public class CacheProductRepository : IProductRepository
 {
     private readonly IDictionary<int, Product> products;
 
