@@ -38,12 +38,13 @@ public class DiscountFactoryProxyTests
     }
 
     [Fact]
-    public void AddDiscountCodeToPool_NotEmptyDiscountCode_DiscountCodePoolHasDiscountCode()
+    public void AddDiscountCodeToPool_SingleDiscountCode_DiscountCodePoolHasDiscountCode()
     {
         // Act
         sut.AddDiscountCodeToPool("a");
 
         // Assert
+        Assert.NotEmpty(sut.DiscountCodePool);
         Assert.Collection(sut.DiscountCodePool, item => item.Contains("a"));
     }
 
@@ -58,6 +59,19 @@ public class DiscountFactoryProxyTests
 
         // Assert
         Assert.Equal(0.5m, result);
+    }
+
+    [Fact]
+    public void Create_UseDiscountCode_ShouldRemoveDiscountCode()
+    {
+        // Arrange
+        sut.AddDiscountCodeToPool("a");
+
+        // Act
+        sut.Create("a");
+
+        // Assert
+        Assert.Empty(sut.DiscountCodePool);
     }
 
     [Fact]
