@@ -30,7 +30,7 @@ public class TrackingServiceMockTests
     {
         // Arrange
         mockFileService
-            .Setup(fs => fs.ReadAllText("tracking.txt"))
+            .Setup(fs => fs.ReadAllText(It.IsAny<string>()))
             .Returns(ValidJson);
 
         // Act
@@ -45,7 +45,7 @@ public class TrackingServiceMockTests
     {
         // Arrange
         mockFileService
-            .Setup(fs => fs.ReadAllText("tracking.txt"))
+            .Setup(fs => fs.ReadAllText(It.IsAny<string>()))
             .Returns(InvalidJson);
 
         // Act

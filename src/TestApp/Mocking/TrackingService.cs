@@ -34,7 +34,7 @@ namespace TestApp.Mocking
 
         public Location Get()
         {
-            string json = _fileService.ReadAllText("tracking.txt");
+            string json = _fileService.ReadAllText("tracking.json");
 
             try
             {
