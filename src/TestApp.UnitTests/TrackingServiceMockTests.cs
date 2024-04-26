@@ -16,18 +16,22 @@ public class TrackingServiceMockTests
 
     const string InvalidJson = "a";
 
+    Mock<IFileService> mockFileService;
+    TrackingService sut;
+
+    public TrackingServiceMockTests()
+    {
+        mockFileService = new Mock<IFileService>();
+        sut = new TrackingService(mockFileService.Object);
+    }
+
     [Fact]
     public void Get_ValidJson_ShouldReturnsLocation()
     {
         // Arrange
-        Mock<IFileService> mockFileService = new Mock<IFileService>();
-
         mockFileService
             .Setup(fs => fs.ReadAllText("tracking.txt"))
             .Returns(ValidJson);
-
-        IFileService fileService = mockFileService.Object;
-        TrackingService sut = new TrackingService(fileService);
 
         // Act
         var result = sut.Get();
@@ -40,15 +44,10 @@ public class TrackingServiceMockTests
     public void Get_InvalidJson_ShouldThrowFormatException()
     {
         // Arrange
-        Mock<IFileService> mockFileService = new Mock<IFileService>();
-
         mockFileService
             .Setup(fs => fs.ReadAllText("tracking.txt"))
             .Returns(InvalidJson);
 
-        IFileService fileService = mockFileService.Object;
-        TrackingService sut = new TrackingService(fileService);
-        
         // Act
         Action act = () => sut.Get();
 
