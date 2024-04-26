@@ -3,28 +3,15 @@ using System.Collections.Generic;
 
 namespace TestApp.Fundamentals;
 
-public interface IDiscountFactory
-{
-    decimal Create(string discountCode);
-}
-
 // Wzorzec Proxy (Pośrednik)
-public class DiscountFactoryProxy : IDiscountFactory
+public class DiscountFactoryProxy(IDiscountFactory discountFactory) : IDiscountFactory
 {
-    private readonly HashSet<string> discountCodePool = new HashSet<string>();
+    private readonly HashSet<string> discountCodePool = [];
     public HashSet<string> DiscountCodePool => discountCodePool;
-
-    private readonly IDiscountFactory discountFactory;
-
-    public DiscountFactoryProxy(IDiscountFactory discountFactory)
-    {
-        this.discountFactory = discountFactory;
-    }
 
     public void AddDiscountCodeToPool(string discountCode)
     {
-        if (string.IsNullOrEmpty(discountCode))
-            throw new ArgumentException();
+        ArgumentException.ThrowIfNullOrEmpty(discountCode);
 
         if (!discountCodePool.Add(discountCode))
             throw new InvalidOperationException();

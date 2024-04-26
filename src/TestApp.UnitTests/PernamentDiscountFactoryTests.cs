@@ -6,51 +6,29 @@ namespace TestApp.UnitTests;
 
 public class PernamentDiscountFactoryTests
 {
-    [Fact]
-    public void Create_DiscountCodeSAVE10NOW_ShouldReturns10PercentageDiscount()
+    readonly PernamentDiscountFactory sut;
+
+    public PernamentDiscountFactoryTests()
     {
-        // Arrange
-        var sut = new PernamentDiscountFactory();
-
-        // Act
-        var result = sut.Create("SAVE10NOW");
-
-        // Assert
-        Assert.Equal(0.1m, result);
+        sut = new PernamentDiscountFactory();
     }
 
-    [Fact]
-    public void Create_DiscountCodeDISCOUNT20OFF_ShouldReturns20PercentageDiscount()
+    [Theory]
+    [InlineData("", 0)]
+    [InlineData("SAVE10NOW", 0.1)]
+    [InlineData("DISCOUNT20OFF", 0.2)]
+    public void Create_ValidDiscountCode_ShouldReturnsPercentage(string discountCode, decimal expected)
     {
-        // Arrange
-        var sut = new PernamentDiscountFactory();
-
         // Act
-        var result = sut.Create("DISCOUNT20OFF");
+        var result = sut.Create(discountCode);
 
         // Assert
-        Assert.Equal(0.2m, result);
+        Assert.Equal(expected, result);
     }
-
-    [Fact]
-    public void Create_EmptyDiscountCode_ShouldReturns0PercentageDiscount()
-    {
-        // Arrange
-        var sut = new PernamentDiscountFactory();
-
-        // Act
-        var result = sut.Create(string.Empty);
-
-        // Assert
-        Assert.Equal(0, result);
-    }
-
+    
     [Fact]
     public void CalculateDiscount_InvalidDiscountCode_ShouldThrowsArgumentException()
     {
-        // Arrange
-        var sut = new PernamentDiscountFactory();
-
         // Act
         Action act = () => sut.Create("a");
 

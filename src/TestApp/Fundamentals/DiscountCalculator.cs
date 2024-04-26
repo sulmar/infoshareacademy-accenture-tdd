@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TestApp.Fundamentals;
 
-public class DiscountCalculator
-{
-    private readonly IDiscountFactory factory;
-
-    public DiscountCalculator(IDiscountFactory factory)
-    {
-        this.factory = factory;
-    }
-
+public class DiscountCalculator(IDiscountFactory factory)
+{    
     public decimal CalculateDiscount(decimal price, string discountCode)
     {
         if (price < 0)
