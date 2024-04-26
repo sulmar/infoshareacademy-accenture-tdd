@@ -10,85 +10,30 @@ using System.Text;
 
 namespace TestApp.Mocking.Edu;
 
-public class Student
-{
-    public string FullName { get; set; }
-    public string Email { get; set; }
 
-}
-
-public enum MessageBoxButtons { Ok }
-public enum MessageBoxStyle { Info, Error }
-public class XtraMessageBox
-{
-    public static void Show(string title, string message, MessageBoxStyle messageBoxStyle, MessageBoxButtons messageBoxButtons)
-    {
-
-    }
-}
-
-public abstract class DbContext
-{
-}
-
-public abstract class DbSet<T> : IQueryable<T>
-    where T : class
-{
-    public Type ElementType => throw new NotImplementedException();
-
-    public Expression Expression => throw new NotImplementedException();
-
-    public IQueryProvider Provider => throw new NotImplementedException();
-
-    public IEnumerator<T> GetEnumerator()
-    {
-        throw new NotImplementedException();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        throw new NotImplementedException();
-    }
-}
-
-public class ApplicationContext : DbContext
-{
-    public DbSet<Student> Students { get; set; }
-}
-
-public class SmtpOptions
-{
-    public string SmtpHost { get; set; }
-    public int SmtpPort { get; set; }
-    public string SmtpUsername { get; set; }
-    public string SmtpPassword { get; set; }
-    public string EmailFrom { get; set; }
-    public string NameFrom { get; set; }
-}
-
-public class CertificateService
+public class StatementService
 {
 
     public bool SendEmails(DateTime certificateDate)
     {
         var db = new ApplicationContext();
 
-        var students = db.Students;
+        var employees = db.Employees.ToList();
 
-        foreach (var student in students)
+        foreach (var employee in employees)
         {
-            if (student.Email == null)
+            if (employee.Email == null)
                 continue;
 
-            var statementFilename = SaveCertificate(student.FullName, certificateDate);
+            var statementFilename = SaveStatementReport(employee.FullName, certificateDate);
 
             try
             {
-                EmailFile(student.Email, "Hello", statementFilename, "Your certificate");
+                EmailFile(employee.Email, $"Hello {employee.FullName}", statementFilename, "Your statement");
             }
             catch (Exception e)
             {
-                XtraMessageBox.Show(e.Message, string.Format("Email failure: {0}", student.Email), MessageBoxStyle.Error, MessageBoxButtons.Ok);
+                XtraMessageBox.Show(e.Message, string.Format("Email failure: {0}", employee.Email), MessageBoxStyle.Error, MessageBoxButtons.Ok);
 
                 return false;
             }
@@ -98,9 +43,9 @@ public class CertificateService
 
     }
 
-    private static string SaveCertificate(string name, DateTime certificateDate)
+    private static string SaveStatementReport(string name, DateTime statementDate)
     {
-        var report = new StatementReport(name, certificateDate);
+        var report = new StatementReport(name, statementDate);
 
         if (!report.HasData)
             return string.Empty;
@@ -108,7 +53,7 @@ public class CertificateService
         report.CreateDocument();
 
         var filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            $"Statement {certificateDate:yyyy-MM} {name}.pdf");
+            $"Statement {statementDate:yyyy-MM} {name}.pdf");
 
 
         report.ExportToPdf(filename);
@@ -153,12 +98,12 @@ public class CertificateService
     public class StatementReport
     {
         public string Name { get; set; }
-        public DateTime CertificateDate { get; set; }
+        public DateTime StatementDate { get; set; }
 
-        public StatementReport(string name, DateTime certificateDate)
+        public StatementReport(string name, DateTime statementDate)
         {
             Name = name;
-            CertificateDate = certificateDate;
+            StatementDate = statementDate;
         }
 
         public bool HasData => !string.IsNullOrEmpty(Name);
@@ -173,4 +118,61 @@ public class CertificateService
 
         }
     }
+}
+
+
+public class Employee
+{
+    public string FullName { get; set; }
+    public string Email { get; set; }
+
+}
+
+public enum MessageBoxButtons { Ok }
+public enum MessageBoxStyle { Info, Error }
+public class XtraMessageBox
+{
+    public static void Show(string title, string message, MessageBoxStyle messageBoxStyle, MessageBoxButtons messageBoxButtons)
+    {
+
+    }
+}
+
+public abstract class DbContext
+{
+}
+
+public abstract class DbSet<T> : IQueryable<T>
+    where T : class
+{
+    public Type ElementType => throw new NotImplementedException();
+
+    public Expression Expression => throw new NotImplementedException();
+
+    public IQueryProvider Provider => throw new NotImplementedException();
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        throw new NotImplementedException();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class ApplicationContext : DbContext
+{
+    public DbSet<Employee> Employees { get; set; }
+}
+
+public class SmtpOptions
+{
+    public string SmtpHost { get; set; }
+    public int SmtpPort { get; set; }
+    public string SmtpUsername { get; set; }
+    public string SmtpPassword { get; set; }
+    public string EmailFrom { get; set; }
+    public string NameFrom { get; set; }
 }
