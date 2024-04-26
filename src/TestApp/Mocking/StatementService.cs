@@ -10,22 +10,72 @@ using System.Text;
 
 namespace TestApp.Mocking.Edu;
 
+public interface IEmployeeRepository
+{
+    IQueryable<Employee> GetAll();
+}
+
+
+public interface IDateTime
+{
+    DateTime Now { get; }
+}
+
+public interface IMessageService
+{
+    void Send(string message);
+}
+
+public class SmtpMessageService : IMessageService
+{
+    public void Send(string message)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class RealDateTime : IDateTime
+{
+    public DateTime Now => DateTime.Now;
+}
+
+public class DbEmployeeRepository : IEmployeeRepository
+{
+    private readonly ApplicationContext db;
+    public DbEmployeeRepository(ApplicationContext db)
+    {
+        this.db = db;
+    }
+
+    public IQueryable<Employee> GetAll()
+    {
+        return db.Employees;
+    }
+}
+
+
 
 public class StatementService
 {
+    IEmployeeRepository employeeRepository;
+    private readonly IDateTime dateTime;
 
-    public bool SendEmails(DateTime certificateDate)
+
+    public StatementService(IEmployeeRepository employeeRepository, IDateTime dateTime)
     {
-        var db = new ApplicationContext();
+        this.employeeRepository = employeeRepository;
+        this.dateTime = dateTime;
+    }
 
-        var employees = db.Employees.ToList();
+    public bool SendEmails()
+    {
+        var employees = employeeRepository.GetAll();
+
+        employees = employees.Where(e => !string.IsNullOrEmpty(e.Email));
 
         foreach (var employee in employees)
         {
-            if (employee.Email == null)
-                continue;
-
-            var statementFilename = SaveStatementReport(employee.FullName, certificateDate);
+            var statementFilename = SaveStatementReport(employee.FullName, dateTime.Now);
 
             try
             {
@@ -115,7 +165,7 @@ public class StatementService
 
         public void ExportToPdf(string filename)
         {
-
+            File.Create(filename);
         }
     }
 }
