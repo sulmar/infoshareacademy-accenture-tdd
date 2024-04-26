@@ -1,21 +1,56 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Text.Json;
 
 namespace TestApp.Mocking
 {
+    public interface IFileService
+    {
+        string ReadAllText(string path);
+    }
+
+    public class RealFileService : IFileService
+    {
+        public string ReadAllText(string path)
+        {
+            return File.ReadAllText("tracking.txt");
+        }
+    }
+
     public class TrackingService
     {
+        private readonly IFileService _fileService;
+
+        public TrackingService(IFileService fileService)
+        {
+            _fileService = fileService;
+        }
+
+        public TrackingService()
+            : this(new RealFileService())
+        {
+        }
+
         public Location Get()
         {
-            string json = File.ReadAllText("tracking.txt");
+            string json = _fileService.ReadAllText("tracking.txt");
 
-            Location location = JsonSerializer.Deserialize<Location>(json);
+            try
+            {
+                Location location = JsonSerializer.Deserialize<Location>(json);
 
-            if (location == null)
-                throw new ApplicationException("Error parsing the location");
 
-            return location;
+                if (location == null)
+                    throw new ApplicationException("Error parsing the location");
+
+                return location;
+
+            }
+            catch(JsonException e)
+            {
+                throw new FormatException();
+            }
         }
     }
 

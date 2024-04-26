@@ -8,13 +8,39 @@ namespace TestApp.Mocking
         public string Password { get; set; }        
     }
 
+    public interface IAuthorizeService
+    {
+        bool Authorize(string username, string password);
+    }
+
+    public interface ITokenService
+    {
+        string CreateToken();
+    }
+
     public class TokensController : BaseController
     {
+        IAuthorizeService authorizeService;
+        ITokenService tokenService;
+
+        public TokensController(IAuthorizeService authorizeService, ITokenService tokenService)
+        {
+            this.authorizeService = authorizeService;
+            this.tokenService = tokenService;
+        }
+
         public ActionResult Create(LoginModel model)
         {
-            // TODO: Authorize and return token
+            if (authorizeService.Authorize(model.Username, model.Password))
+            {
+                var token = tokenService.CreateToken();
 
-            throw new NotImplementedException();
+                return Ok(token);
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
     }
 
