@@ -56,7 +56,7 @@ public class TokensControllerTests
     [Fact]
     public void Create_InvalidUsernameAndPassword_ShouldReturnsUnauthorized()
     {
-        var sut = new TokensController(new FakeAuthorizeService(), new FakeTokenService());
+        var sut = new TokensController(new FakeAuthorizeService(), null);
         var model = new LoginModel { Username = "a", Password = "1234" };
 
         var result = sut.Create(model);
